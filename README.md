@@ -30,7 +30,7 @@ To access the files now, you can simply query libromfs.
 
 int main() {
   /* Get file relative to the romfs folder */
-  romfs::Resource my_file = romfs::get("path/to/my/file.exe"); 
+  romfs::Resource my_file = romfs::get("path/to/my/file.txt"); 
   
   /* Print size and content of file */
   std::printf("File Size: %zu bytes\n", my_file.content.size());
