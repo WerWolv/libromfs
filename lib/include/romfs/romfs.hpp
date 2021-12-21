@@ -1,13 +1,14 @@
 #pragma once
 
 #include <cstdint>
+#include <cstddef>
 #include <string>
+#include <span>
 
 namespace romfs {
 
     struct Resource {
-        const unsigned char* data;
-        size_t size;
+        std::span<std::byte> content;
     };
 
     Resource get(const std::string &path);

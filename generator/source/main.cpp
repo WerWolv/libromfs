@@ -43,7 +43,7 @@ int main() {
     for (std::uint64_t i = 0; i < identifierCount; i++) {
         std::printf("libromfs: Bundling resource: %s\n", paths[i].c_str());
 
-        outputFile << "    " << "{ \"" << paths[i] << "\", { resource" << i << ", " << "size_t(resource" << i << "_size) } " << "},\n";
+        outputFile << "    " << "{ \"" << paths[i] << "\", { { resource" << i << ", " << "size_t(resource" << i << "_size) } } " << "},\n";
     }
 
     outputFile << "};";

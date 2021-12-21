@@ -33,7 +33,7 @@ int main() {
   romfs::Resource my_file = romfs::get("path/to/my/file.exe"); 
   
   /* Print size and content of file */
-  std::printf("File Size: %zu bytes\n", my_file.size);
-  std::printf("File content: %s\n", my_file.data);
+  std::printf("File Size: %zu bytes\n", my_file.content.size());
+  std::printf("File content: %s\n", my_file.content.data());
 }
 ```

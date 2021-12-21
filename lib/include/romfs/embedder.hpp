@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstddef>
+
 #if defined(__clang__)
 
     #define RESOURCE(name, path)                        \
@@ -49,6 +51,6 @@
     #error "Unknown compiler!"
 #endif
 
-#define RESOURCE_EXPORT(name)           \
-    extern "C" unsigned char name[];    \
+#define RESOURCE_EXPORT(name)       \
+    extern "C" std::byte name[];    \
     extern "C" int name##_size;
