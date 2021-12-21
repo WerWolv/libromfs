@@ -7,6 +7,8 @@ namespace fs = std::filesystem;
 int main() {
     std::ofstream outputFile("libromfs_resources.cpp");
 
+    std::printf("libromfs: Resource Folder: %s\n", RESOURCE_LOCATION);
+
     outputFile << "#include <romfs/romfs.hpp>\n";
     outputFile << "#include <romfs/embedder.hpp>\n";
     outputFile << "#include <string>\n";
@@ -39,6 +41,8 @@ int main() {
     outputFile << "std::map<std::string, romfs::Resource> resources = {\n";
 
     for (std::uint64_t i = 0; i < identifierCount; i++) {
+        std::printf("libromfs: Bundling resource: %s\n", paths[i].c_str());
+
         outputFile << "    " << "{ \"" << paths[i] << "\", { resource" << i << ", " << "size_t(resource" << i << "_size) } " << "},\n";
     }
 
