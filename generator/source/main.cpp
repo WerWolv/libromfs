@@ -39,16 +39,31 @@ int main() {
     }
 
     outputFile << "\n";
-    outputFile << "/* Resource map */";
-    outputFile << "std::map<std::string_view, romfs::Resource> resources = {\n";
 
-    for (std::uint64_t i = 0; i < identifierCount; i++) {
-        std::printf("libromfs: Bundling resource: %s\n", paths[i].c_str());
+    {
+        outputFile << "/* Resource map */";
+        outputFile << "std::map<std::string_view, romfs::Resource> resources = {\n";
 
-        outputFile << "    " << "{ \"" << paths[i] << "\", { { resource" << i << ", " << "size_t(resource" << i << "_size) } } " << "},\n";
+        for (std::uint64_t i = 0; i < identifierCount; i++) {
+            std::printf("libromfs: Bundling resource: %s\n", paths[i].c_str());
+
+            outputFile << "    " << "{ \"" << paths[i] << "\", { { resource" << i << ", " << "size_t(resource" << i << "_size) } } " << "},\n";
+        }
+        outputFile << "};";
     }
 
-    outputFile << "};";
+    outputFile << "\n";
+
+    {
+        outputFile << "/* Resource paths */";
+        outputFile << "std::vector<std::string_view> paths = {\n";
+
+        for (std::uint64_t i = 0; i < identifierCount; i++) {
+            outputFile << "    \"" << paths[i] << "\",\n";
+        }
+        outputFile << "};";
+    }
+
 
     outputFile << "\n\n";
 }

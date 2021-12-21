@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <string>
 #include <span>
+#include <vector>
 
 namespace romfs {
 
@@ -11,6 +12,10 @@ namespace romfs {
         std::span<std::byte> content;
     };
 
-    Resource get(std::string_view path);
+    [[nodiscard]]
+    const Resource& get(std::string_view path);
+
+    [[nodiscard]]
+    const std::vector<std::string_view>& list();
 
 }
