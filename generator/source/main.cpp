@@ -19,6 +19,8 @@ int main() {
     std::vector<std::string> paths;
     std::uint64_t identifierCount = 0;
     for (const auto &entry : fs::recursive_directory_iterator(RESOURCE_LOCATION)) {
+        if (!entry.is_regular_file()) continue;
+
         auto relativePath = fs::relative(entry.path()).generic_string();
 
         outputFile << "RESOURCE(" << "resource" << identifierCount << ", \"" << relativePath << "\");\n";
