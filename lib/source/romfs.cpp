@@ -2,8 +2,8 @@
 
 #include <map>
 
-extern std::map<std::string, romfs::Resource> resources;
+extern std::map<std::string_view, romfs::Resource> resources;
 
-romfs::Resource romfs::get(const std::string &path){
+romfs::Resource romfs::get(std::string_view path){
     return resources[path];
 }

@@ -11,6 +11,6 @@ namespace romfs {
         std::span<std::byte> content;
     };
 
-    Resource get(const std::string &path);
+    Resource get(std::string_view path);
 
 }

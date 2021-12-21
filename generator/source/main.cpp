@@ -11,7 +11,7 @@ int main() {
 
     outputFile << "#include <romfs/romfs.hpp>\n";
     outputFile << "#include <romfs/embedder.hpp>\n";
-    outputFile << "#include <string>\n";
+    outputFile << "#include <string_view>\n";
     outputFile << "#include <map>\n\n";
 
     outputFile << "/* Resource definitions */\n";
@@ -38,7 +38,7 @@ int main() {
 
     outputFile << "\n";
     outputFile << "/* Resource map */";
-    outputFile << "std::map<std::string, romfs::Resource> resources = {\n";
+    outputFile << "std::map<std::string_view, romfs::Resource> resources = {\n";
 
     for (std::uint64_t i = 0; i < identifierCount; i++) {
         std::printf("libromfs: Bundling resource: %s\n", paths[i].c_str());
