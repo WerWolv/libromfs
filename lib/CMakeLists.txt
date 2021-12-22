@@ -17,4 +17,6 @@ add_custom_command(OUTPUT ${ROMFS}
         DEPENDS ../generator ${ROMFS_FILES}
         )
 
+add_custom_target(romfs_file_packer ALL DEPENDS ${ROMFS_FILES})
+
 target_include_directories(libromfs PUBLIC include)
