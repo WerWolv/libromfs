@@ -1,5 +1,6 @@
+cmake_minimum_required(VERSION 3.16)
+
 project(libromfs_base)
-cmake_minimum_required(VERSION 3.21)
 
 if (NOT DEFINED LIBROMFS_RESOURCE_LOCATION)
     message(FATAL_ERROR "To use libromfs, please point the variable LIBROMFS_RESOURCE_LOCATION to a valid folder path")
