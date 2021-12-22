@@ -21,17 +21,11 @@ int main() {
     for (const auto &entry : fs::recursive_directory_iterator(RESOURCE_LOCATION)) {
         if (!entry.is_regular_file()) continue;
 
-        auto relativePath = fs::relative(entry.path()).generic_string();
+        auto path = fs::absolute(entry.path()).generic_string();
+        auto relativePath = fs::relative(entry.path(), fs::absolute(RESOURCE_LOCATION)).generic_string();
 
-        outputFile << "RESOURCE(" << "resource" << identifierCount << ", \"" << relativePath << "\");\n";
+        outputFile << "RESOURCE(" << "resource" << identifierCount << ", \"" << path << "\");\n";
         outputFile << "RESOURCE_EXPORT(" << "resource" << identifierCount << ");\n";
-
-        while (std::string_view(relativePath).starts_with("../")) {
-            relativePath = relativePath.substr(3);
-        }
-
-        if (std::string_view(relativePath).starts_with("romfs/"))
-            relativePath = relativePath.substr(6);
 
         paths.push_back(relativePath);
 
