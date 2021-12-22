@@ -1,6 +1,7 @@
 #include <fstream>
 #include <filesystem>
 #include <string>
+#include <vector>
 
 namespace fs = std::filesystem;
 
@@ -9,9 +10,10 @@ int main() {
 
     std::printf("libromfs: Resource Folder: %s\n", RESOURCE_LOCATION);
 
-    outputFile << "#include <romfs/romfs.hpp>\n";
-    outputFile << "#include <string_view>\n";
+    outputFile << "#include <romfs/romfs.hpp>\n\n";
     outputFile << "#include <map>\n";
+    outputFile << "#include <string_view>\n";
+    outputFile << "#include <vector>\n\n";
 
     outputFile <<
                #include "embedder.hpp"
