@@ -1,5 +1,4 @@
-#pragma once
-
+R"embedder(
 #include <cstddef>
 
 #if defined(__clang__)
@@ -50,3 +49,4 @@
 #define RESOURCE_EXPORT(name)       \
     extern "C" std::byte name[];    \
     extern "C" int name##_size;
+)embedder";

@@ -10,10 +10,13 @@ int main() {
     std::printf("libromfs: Resource Folder: %s\n", RESOURCE_LOCATION);
 
     outputFile << "#include <romfs/romfs.hpp>\n";
-    outputFile << "#include <romfs/embedder.hpp>\n";
     outputFile << "#include <string_view>\n";
-    outputFile << "#include <map>\n\n";
+    outputFile << "#include <map>\n";
 
+    outputFile <<
+               #include "embedder.hpp"
+
+    outputFile << "\n\n";
     outputFile << "/* Resource definitions */\n";
 
     std::vector<std::string> paths;
