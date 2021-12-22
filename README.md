@@ -23,17 +23,17 @@ Now, you can place all your files and folders into the `./romfs` folder next to 
 To access the files now, you can simply query libromfs.
 
 ```cpp
- /* Include libromfs header */
+/* Include libromfs header */
 #include <romfs/romfs.hpp>
 
 #include <cstdio>
 
 int main() {
   /* Get file relative to the romfs folder */
-  romfs::Resource my_file = romfs::get("path/to/my/file.txt"); 
+  auto my_file = romfs::get("path/to/my/file.txt"); 
   
   /* Print size and content of file */
-  std::printf("File Size: %zu bytes\n", my_file.content.size());
-  std::printf("File content: %s\n", my_file.content.data());
+  std::printf("File Size: %zu bytes\n", my_file.size());
+  std::printf("File content: %s\n", my_file.data());
 }
 ```
