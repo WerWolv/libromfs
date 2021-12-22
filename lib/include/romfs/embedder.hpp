@@ -22,8 +22,6 @@
         #define RESOURCE(name, path)                    \
         __asm__ (                                       \
             ".section .rodata\n"                        \
-            ".global " #name "\n"                       \
-            ".global " #name "_size\n"                  \
             #name ":\n"                                 \
                 ".incbin \"" path "\"\n"                \
                 ".type " #name ", @object\n"            \
@@ -36,8 +34,6 @@
         #define RESOURCE(name, path)                    \
         __asm__ (                                       \
             ".section .rodata\n"                        \
-            ".global " #name "\n"                       \
-            ".global " #name "_size\n"                  \
             #name ":\n"                                 \
                 ".incbin \"" path "\"\n"                \
                 ".byte 0\n"                             \
