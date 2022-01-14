@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <cstddef>
-#include <string>
+#include <string_view>
 #include <span>
 #include <vector>
 
@@ -21,6 +21,11 @@ namespace romfs {
         [[nodiscard]]
         constexpr std::size_t size() const {
             return this->m_content.size();
+        }
+
+        [[nodiscard]]
+        std::string_view string() const {
+            return { reinterpret_cast<const char*>(this->data()), this->size() + 1 };
         }
 
         [[nodiscard]]
