@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <cstddef>
-#include <string_view>
+#include <string>
 #include <span>
 #include <vector>
 
@@ -38,9 +38,9 @@ namespace romfs {
     };
 
     [[nodiscard]]
-    const Resource& get(std::string_view path);
+    const Resource& get(const std::string &path);
 
     [[nodiscard]]
-    const std::vector<std::string_view>& list();
+    const std::vector<std::string>& list();
 
 }

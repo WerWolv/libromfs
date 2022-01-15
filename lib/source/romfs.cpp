@@ -2,13 +2,15 @@
 
 #include <map>
 
-extern std::map<std::string_view, romfs::Resource> resources;
-extern std::vector<std::string_view> paths;
+struct RomFs {
+    static std::map<std::string, romfs::Resource> resources;
+    static std::vector<std::string> paths;
+};
 
-const romfs::Resource& romfs::get(std::string_view path){
-    return resources[path];
+const romfs::Resource& romfs::get(const std::string &path){
+    return RomFs::resources[path];
 }
 
-const std::vector<std::string_view>& romfs::list() {
-    return paths;
+const std::vector<std::string>& romfs::list() {
+    return RomFs::paths;
 }

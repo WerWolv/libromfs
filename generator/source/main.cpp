@@ -12,7 +12,7 @@ int main() {
 
     outputFile << "#include <romfs/romfs.hpp>\n\n";
     outputFile << "#include <map>\n";
-    outputFile << "#include <string_view>\n";
+    outputFile << "#include <string>\n";
     outputFile << "#include <vector>\n\n";
 
     outputFile <<
@@ -39,9 +39,14 @@ int main() {
 
     outputFile << "\n";
 
+    outputFile << "struct RomFs {\n";
+    outputFile << "    static std::map<std::string, romfs::Resource> resources;\n";
+    outputFile << "    static std::vector<std::string> paths;\n";
+    outputFile << "};\n\n";
+
     {
-        outputFile << "/* Resource map */";
-        outputFile << "std::map<std::string_view, romfs::Resource> resources = {\n";
+        outputFile << "/* Resource map */\n";
+        outputFile << "std::map<std::string, romfs::Resource> RomFs::resources = {\n";
 
         for (std::uint64_t i = 0; i < identifierCount; i++) {
             std::printf("libromfs: Bundling resource: %s\n", paths[i].c_str());
@@ -54,8 +59,8 @@ int main() {
     outputFile << "\n";
 
     {
-        outputFile << "/* Resource paths */";
-        outputFile << "std::vector<std::string_view> paths = {\n";
+        outputFile << "/* Resource paths */\n";
+        outputFile << "std::vector<std::string> RomFs::paths = {\n";
 
         for (std::uint64_t i = 0; i < identifierCount; i++) {
             outputFile << "    \"" << paths[i] << "\",\n";
