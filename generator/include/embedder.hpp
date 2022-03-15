@@ -1,19 +1,34 @@
 R"embedder(
 #include <cstddef>
 
-#if defined(__clang__)
+#if defined(__clang__) && !defined(__APPLE__)
 
     #define RESOURCE(name, path)                        \
     __asm__ (                                           \
-        ".global " #name "\n"                          \
-        ".global " #name "_size\n"                     \
-        #name ":\n"                                 \
+        ".global " #name "\n"                           \
+        ".global " #name "_size\n"                      \
+        #name ":\n"                                     \
             ".incbin \"" path "\"\n"                    \
             ".align 8\n"                                \
-        #name "_size:\n"                            \
-            ".int " #name "_size - " #name " - 1\n"   \
+        #name "_size:\n"                                \
+            ".int " #name "_size - " #name " - 1\n"     \
             ".align 8\n"                                \
     )
+
+#elif defined(__clang__) && defined(__APPLE__)
+
+    #define RESOURCE(name, path)                        \
+    __asm__ (                                           \
+        ".global _" #name "\n"                          \
+        ".global _" #name "_size\n"                     \
+        "_" #name ":\n"                                 \
+            ".incbin \"" path "\"\n"                    \
+            ".align 8\n"                                \
+        "_" #name "_size:\n"                            \
+            ".int _" #name "_size - _" #name " - 1\n"   \
+            ".align 8\n"                                \
+    )
+
 
 #elif defined(__GNUC__)
 
