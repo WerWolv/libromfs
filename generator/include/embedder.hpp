@@ -15,7 +15,7 @@ R"embedder(
             ".align 8\n"                                \
     )
 
-#elif defined(__clang__) && defined(__APPLE__)
+#elif defined(__APPLE__)
 
     #define RESOURCE(name, path)                        \
     __asm__ (                                           \
