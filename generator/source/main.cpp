@@ -14,18 +14,16 @@ namespace {
         return string;
     }
 
-    std::string toPathString(const std::string &string) {
-        std::string result;
-
+    std::string toPathString(std::string string) {
         // Replace all backslashes with forward slashes on Windows
         #if defined (OS_WINDOWS)
-            result = replace(string, "\\", "/");
+            string = replace(string, "\\", "/");
         #endif
 
         // Replace all " with \"
-        result = replace(result, "\"", "\\\"");
+        string = replace(string, "\"", "\\\"");
 
-        return result;
+        return string;
     }
 
 }
@@ -52,7 +50,7 @@ int main() {
     for (const auto &entry : fs::recursive_directory_iterator(RESOURCE_LOCATION)) {
         if (!entry.is_regular_file()) continue;
 
-        auto path = fs::absolute(entry.path());
+        auto path = fs::canonical(fs::absolute(entry.path()));
         auto relativePath = fs::relative(entry.path(), fs::absolute(RESOURCE_LOCATION));
 
         outputFile << "RESOURCE(" << "resource" << identifierCount << ", \"" << toPathString(path.string()) << "\");\n";
