@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <cstddef>
+#include <filesystem>
 #include <string>
 #include <span>
 #include <vector>
@@ -29,6 +30,11 @@ namespace romfs {
         }
 
         [[nodiscard]]
+        std::u8string_view u8string() const {
+            return { reinterpret_cast<const char8_t *>(this->data()), this->size() + 1 };
+        }
+
+        [[nodiscard]]
         constexpr bool valid() const {
             return !this->m_content.empty() && this->m_content.data() != nullptr;
         }
@@ -38,9 +44,9 @@ namespace romfs {
     };
 
     [[nodiscard]]
-    const Resource& get(const std::string &path);
+    const Resource& get(const std::filesystem::path &path);
 
     [[nodiscard]]
-    const std::vector<std::string>& list();
+    const std::vector<std::filesystem::path>& list();
 
 }

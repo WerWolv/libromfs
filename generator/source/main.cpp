@@ -5,6 +5,31 @@
 
 namespace fs = std::filesystem;
 
+namespace {
+
+    std::string replace(std::string string, const std::string &from, const std::string &to) {
+        if(!from.empty())
+            for(size_t pos = 0; (pos = string.find(from, pos)) != std::string::npos; pos += to.size())
+                string.replace(pos, from.size(), to);
+        return string;
+    }
+
+    std::string toPathString(const std::string &string) {
+        std::string result;
+
+        // Replace all backslashes with forward slashes on Windows
+        #if defined (OS_WINDOWS)
+            result = replace(string, "\\", "/");
+        #endif
+
+        // Replace all " with \"
+        result = replace(result, "\"", "\\\"");
+
+        return result;
+    }
+
+}
+
 int main() {
     std::ofstream outputFile("libromfs_resources.cpp");
 
@@ -13,7 +38,8 @@ int main() {
     outputFile << "#include <romfs/romfs.hpp>\n\n";
     outputFile << "#include <map>\n";
     outputFile << "#include <string>\n";
-    outputFile << "#include <vector>\n\n";
+    outputFile << "#include <filesystem>\n";
+    outputFile << "#include <vector>\n";
 
     outputFile <<
                #include "embedder.hpp"
@@ -21,15 +47,15 @@ int main() {
     outputFile << "\n\n";
     outputFile << "/* Resource definitions */\n";
 
-    std::vector<std::string> paths;
+    std::vector<std::filesystem::path> paths;
     std::uint64_t identifierCount = 0;
     for (const auto &entry : fs::recursive_directory_iterator(RESOURCE_LOCATION)) {
         if (!entry.is_regular_file()) continue;
 
-        auto path = fs::absolute(entry.path()).generic_string();
-        auto relativePath = fs::relative(entry.path(), fs::absolute(RESOURCE_LOCATION)).generic_string();
+        auto path = fs::canonical(fs::absolute(entry.path()));
+        auto relativePath = fs::relative(entry.path(), fs::absolute(RESOURCE_LOCATION));
 
-        outputFile << "RESOURCE(" << "resource" << identifierCount << ", \"" << path << "\");\n";
+        outputFile << "RESOURCE(" << "resource" << identifierCount << ", \"" << toPathString(path.string()) << "\");\n";
         outputFile << "RESOURCE_EXPORT(" << "resource" << identifierCount << ");\n";
 
         paths.push_back(relativePath);
@@ -40,30 +66,30 @@ int main() {
     outputFile << "\n";
 
     outputFile << "struct RomFs {\n";
-    outputFile << "    static std::map<std::string, romfs::Resource> resources;\n";
-    outputFile << "    static std::vector<std::string> paths;\n";
+    outputFile << "    static std::map<std::filesystem::path, romfs::Resource> resources;\n";
+    outputFile << "    static std::vector<std::filesystem::path> paths;\n";
     outputFile << "};\n\n";
 
     {
         outputFile << "/* Resource map */\n";
-        outputFile << "std::map<std::string, romfs::Resource> RomFs::resources = {\n";
+        outputFile << "std::map<std::filesystem::path, romfs::Resource> RomFs::resources = {\n";
 
         for (std::uint64_t i = 0; i < identifierCount; i++) {
-            std::printf("libromfs: Bundling resource: %s\n", paths[i].c_str());
+            std::printf("libromfs: Bundling resource: %s\n", paths[i].string().c_str());
 
-            outputFile << "    " << "{ \"" << paths[i] << "\", romfs::Resource({ resource" << i << ", " << "size_t(resource" << i << "_size) }) " << "},\n";
+            outputFile << "    " << "{ \"" << paths[i].string() << "\", romfs::Resource({ resource" << i << ", " << "size_t(resource" << i << "_size) }) " << "},\n";
         }
         outputFile << "};";
     }
 
-    outputFile << "\n";
+    outputFile << "\n\n";
 
     {
         outputFile << "/* Resource paths */\n";
-        outputFile << "std::vector<std::string> RomFs::paths = {\n";
+        outputFile << "std::vector<std::filesystem::path> RomFs::paths = {\n";
 
         for (std::uint64_t i = 0; i < identifierCount; i++) {
-            outputFile << "    \"" << paths[i] << "\",\n";
+            outputFile << "    \"" << toPathString(paths[i].string()) << "\",\n";
         }
         outputFile << "};";
     }

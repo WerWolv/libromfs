@@ -3,14 +3,14 @@
 #include <map>
 
 struct RomFs {
-    static std::map<std::string, romfs::Resource> resources;
-    static std::vector<std::string> paths;
+    static std::map<std::filesystem::path, romfs::Resource> resources;
+    static std::vector<std::filesystem::path> paths;
 };
 
-const romfs::Resource& romfs::get(const std::string &path){
+const romfs::Resource& romfs::get(const std::filesystem::path &path){
     return RomFs::resources[path];
 }
 
-const std::vector<std::string>& romfs::list() {
+const std::vector<std::filesystem::path>& romfs::list() {
     return RomFs::paths;
 }

@@ -1,6 +1,7 @@
 R"embedder(
 #include <cstddef>
 
+/* File embedder macros */
 #if defined(__clang__) && !defined(__APPLE__)
 
     #define RESOURCE(name, path)                        \
