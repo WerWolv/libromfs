@@ -52,7 +52,7 @@ int main() {
     for (const auto &entry : fs::recursive_directory_iterator(RESOURCE_LOCATION)) {
         if (!entry.is_regular_file()) continue;
 
-        auto path = fs::canonical(fs::absolute(entry.path()));
+        auto path = fs::absolute(entry.path());
         auto relativePath = fs::relative(entry.path(), fs::absolute(RESOURCE_LOCATION));
 
         outputFile << "RESOURCE(" << "resource" << identifierCount << ", \"" << toPathString(path.string()) << "\");\n";
