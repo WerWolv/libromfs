@@ -10,6 +10,7 @@ R"embedder(
         ".global " #name "_size\n"                      \
         #name ":\n"                                     \
             ".incbin \"" path "\"\n"                    \
+            ".byte 0\n"                                 \
             ".align 8\n"                                \
         #name "_size:\n"                                \
             ".int " #name "_size - " #name " - 1\n"     \
@@ -24,6 +25,7 @@ R"embedder(
         ".global _" #name "_size\n"                     \
         "_" #name ":\n"                                 \
             ".incbin \"" path "\"\n"                    \
+            ".byte 0\n"                                 \
             ".align 8\n"                                \
         "_" #name "_size:\n"                            \
             ".int _" #name "_size - _" #name " - 1\n"   \
@@ -39,6 +41,7 @@ R"embedder(
             ".section .rodata\n"                        \
             #name ":\n"                                 \
                 ".incbin \"" path "\"\n"                \
+                ".byte 0\n"                             \
                 ".type " #name ", @object\n"            \
                 ".size " #name "_size, 1\n"             \
             #name "_size:\n"                            \
