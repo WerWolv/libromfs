@@ -1,6 +1,17 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(libromfs_base)
+option(LIBROMFS_PROJECT_NAME "Project name" "")
+option(LIBROMFS_RESOURCE_LOCATION "Resource location" "")
+
+if (NOT LIBROMFS_PROJECT_NAME)
+    message(FATAL_ERROR "LIBROMFS_PROJECT_NAME is not set")
+endif ()
+
+if (NOT LIBROMFS_RESOURCE_LOCATION)
+    message(FATAL_ERROR "LIBROMFS_RESOURCE_LOCATION is not set")
+endif ()
+
+project(libromfs_base-${LIBROMFS_PROJECT_NAME})
 
 # Make sure libromfs is configured correctly
 if (NOT DEFINED LIBROMFS_RESOURCE_LOCATION)

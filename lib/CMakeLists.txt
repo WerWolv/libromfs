@@ -1,4 +1,4 @@
-project(libromfs)
+project("libromfs-${LIBROMFS_PROJECT_NAME}")
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -8,18 +8,18 @@ file(GLOB_RECURSE ROMFS_FILES
 )
 
 # Add sources
-add_library(libromfs STATIC
+add_library(${PROJECT_NAME} STATIC
     ${ROMFS}
     source/romfs.cpp
 )
-target_include_directories(libromfs PUBLIC include)
-set_target_properties(libromfs PROPERTIES PREFIX "")
-
+target_include_directories(${PROJECT_NAME} PUBLIC include)
+set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
+target_compile_definitions(${PROJECT_NAME} PUBLIC LIBROMFS_PROJECT_NAME=${LIBROMFS_PROJECT_NAME})
 
 # Make sure libromfs gets rebuilt when any of the resources are changed
 add_custom_command(OUTPUT ${ROMFS}
-        COMMAND $<TARGET_FILE:generator>
+        COMMAND $<TARGET_FILE:generator-${LIBROMFS_PROJECT_NAME}>
         DEPENDS ../generator ${ROMFS_FILES}
         )
 
-add_custom_target(romfs_file_packer ALL DEPENDS ${ROMFS_FILES})
+add_custom_target(romfs_file_packer-${LIBROMFS_PROJECT_NAME} ALL DEPENDS ${ROMFS_FILES})

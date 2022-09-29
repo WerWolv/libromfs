@@ -7,6 +7,11 @@
 #include <span>
 #include <vector>
 
+#define ROMFS_CONCAT_IMPL(x, y) x##y
+#define ROMFS_CONCAT(x, y) ROMFS_CONCAT_IMPL(x, y)
+
+#define ROMFS_NAME ROMFS_CONCAT(RomFs_, LIBROMFS_PROJECT_NAME)
+
 namespace romfs {
 
     class Resource {
@@ -44,7 +49,9 @@ namespace romfs {
     };
 
     [[nodiscard]]
-    const Resource& get(const std::filesystem::path &path);
+    const Resource& ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &path);
+
+    inline const Resource& get(const std::filesystem::path &path) { return ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(path); }
 
     [[nodiscard]]
     const std::vector<std::filesystem::path>& list();

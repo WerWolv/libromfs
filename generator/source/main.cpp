@@ -63,14 +63,14 @@ int main() {
 
     outputFile << "\n";
 
-    outputFile << "struct RomFs {\n";
+    outputFile << "struct RomFs_" LIBROMFS_PROJECT_NAME " {\n";
     outputFile << "    static std::map<std::filesystem::path, romfs::Resource> resources;\n";
     outputFile << "    static std::vector<std::filesystem::path> paths;\n";
     outputFile << "};\n\n";
 
     {
         outputFile << "/* Resource map */\n";
-        outputFile << "std::map<std::filesystem::path, romfs::Resource> RomFs::resources = {\n";
+        outputFile << "std::map<std::filesystem::path, romfs::Resource> RomFs_" LIBROMFS_PROJECT_NAME "::resources = {\n";
 
         for (std::uint64_t i = 0; i < identifierCount; i++) {
             std::printf("libromfs: Bundling resource: %s\n", paths[i].string().c_str());
@@ -84,7 +84,7 @@ int main() {
 
     {
         outputFile << "/* Resource paths */\n";
-        outputFile << "std::vector<std::filesystem::path> RomFs::paths = {\n";
+        outputFile << "std::vector<std::filesystem::path> RomFs_" LIBROMFS_PROJECT_NAME "::paths = {\n";
 
         for (std::uint64_t i = 0; i < identifierCount; i++) {
             outputFile << "    \"" << toPathString(paths[i].string()) << "\",\n";
