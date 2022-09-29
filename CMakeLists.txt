@@ -20,6 +20,9 @@ elseif (NOT EXISTS ${LIBROMFS_RESOURCE_LOCATION} OR NOT IS_DIRECTORY ${LIBROMFS_
     message(FATAL_ERROR "LIBROMFS_RESOURCE_LOCATION has been defined but does not point to a valid folder")
 endif ()
 
+set(LIBROMFS_LIBRARY libromfs-${LIBROMFS_PROJECT_NAME} PARENT_SCOPE)
+
 # Add libromfs components
 add_subdirectory(generator)
 add_subdirectory(lib)
+

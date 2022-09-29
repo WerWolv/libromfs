@@ -8,14 +8,18 @@ The main advantage is, that you don't need to depend on the user having the appl
 libromfs depends on CMake for code generation.
 
 ```cmake
+# Set the project name this romfs is being used for
+set(LIBROMFS_PROJECT_NAME ${PROJECT_NAME})
+
 # Set the location of our romfs folder
 set(LIBROMFS_RESOURCE_LOCATION "${CMAKE_SOURCE_DIR}/romfs")
+
 
 # Include libromfs
 add_subdirectory(libromfs)
 
 # Link libromfs into our application
-target_link_libraries(my_application PUBLIC libromfs)
+target_link_libraries(my_application PUBLIC ${LIBROMFS_LIBRARY})
 ```
 
 Now, you can place all your files and folders into the `./romfs` folder next to your `CMakeLists.txt` file. 
