@@ -39,9 +39,6 @@ int main() {
     outputFile << "#include <filesystem>\n";
     outputFile << "#include <vector>\n";
 
-    outputFile <<
-               #include "embedder.hpp"
-
     outputFile << "\n\n";
     outputFile << "/* Resource definitions */\n";
 
@@ -53,8 +50,23 @@ int main() {
         auto path = fs::canonical(fs::absolute(entry.path()));
         auto relativePath = fs::relative(entry.path(), fs::absolute(RESOURCE_LOCATION));
 
-        outputFile << "RESOURCE(" << "resource_" LIBROMFS_PROJECT_NAME "_" << identifierCount << ", \"" << toPathString(path.string()) << "\");\n";
-        outputFile << "RESOURCE_EXPORT(" << "resource_" LIBROMFS_PROJECT_NAME "_" << identifierCount << ");\n";
+        outputFile << "static std::array<uint8_t, " << entry.file_size() << "> " << "resource_" LIBROMFS_PROJECT_NAME "_" << identifierCount << " = {\n";
+        outputFile << "    ";
+
+        std::vector<std::byte> bytes;
+        bytes.resize(entry.file_size());
+
+        auto file = std::fopen(entry.path().string().c_str(), "rb");
+        std::fread(bytes.data(), 1, entry.file_size(), file);
+        std::fclose(file);
+
+        outputFile << std::hex << std::uppercase << std::setfill('0') << std::setw(2);
+        for (std::byte byte : bytes) {
+            outputFile << "0x" << static_cast<std::uint32_t>(byte) << ", ";
+        }
+        outputFile << std::dec << std::nouppercase << std::setfill(' ') << std::setw(0);
+
+        outputFile << "\n};\n\n";
 
         paths.push_back(relativePath);
 
@@ -75,7 +87,7 @@ int main() {
         for (std::uint64_t i = 0; i < identifierCount; i++) {
             std::printf("libromfs: Bundling resource: %s\n", paths[i].string().c_str());
 
-            outputFile << "    " << "{ \"" << paths[i].string() << "\", romfs::Resource({ resource_" LIBROMFS_PROJECT_NAME "_" << i << ", " << "size_t(resource_" LIBROMFS_PROJECT_NAME "_" << i << "_size) }) " << "},\n";
+            outputFile << "    " << "{ \"" << paths[i].string() << "\", romfs::Resource({ reinterpret_cast<std::byte*>(resource_" LIBROMFS_PROJECT_NAME "_" << i << ".data()), " << "resource_" LIBROMFS_PROJECT_NAME "_" << i << ".size() }) " << "},\n";
         }
         outputFile << "};";
     }
