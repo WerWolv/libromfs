@@ -53,8 +53,8 @@ int main() {
         auto path = fs::canonical(fs::absolute(entry.path()));
         auto relativePath = fs::relative(entry.path(), fs::absolute(RESOURCE_LOCATION));
 
-        outputFile << "RESOURCE(" << "resource" << identifierCount << ", \"" << toPathString(path.string()) << "\");\n";
-        outputFile << "RESOURCE_EXPORT(" << "resource" << identifierCount << ");\n";
+        outputFile << "RESOURCE(" << "resource_" LIBROMFS_PROJECT_NAME "_" << identifierCount << ", \"" << toPathString(path.string()) << "\");\n";
+        outputFile << "RESOURCE_EXPORT(" << "resource_" LIBROMFS_PROJECT_NAME "_" << identifierCount << ");\n";
 
         paths.push_back(relativePath);
 
@@ -75,7 +75,7 @@ int main() {
         for (std::uint64_t i = 0; i < identifierCount; i++) {
             std::printf("libromfs: Bundling resource: %s\n", paths[i].string().c_str());
 
-            outputFile << "    " << "{ \"" << paths[i].string() << "\", romfs::Resource({ resource" << i << ", " << "size_t(resource" << i << "_size) }) " << "},\n";
+            outputFile << "    " << "{ \"" << paths[i].string() << "\", romfs::Resource({ resource_" LIBROMFS_PROJECT_NAME "_" << i << ", " << "size_t(resource_" LIBROMFS_PROJECT_NAME "_" << i << "_size) }) " << "},\n";
         }
         outputFile << "};";
     }
