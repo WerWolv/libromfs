@@ -57,7 +57,7 @@ int main() {
         bytes.resize(entry.file_size());
 
         auto file = std::fopen(entry.path().string().c_str(), "rb");
-        std::fread(bytes.data(), 1, entry.file_size(), file);
+        bytes.resize(std::fread(bytes.data(), 1, entry.file_size(), file));
         std::fclose(file);
 
         outputFile << std::hex << std::uppercase << std::setfill('0') << std::setw(2);
