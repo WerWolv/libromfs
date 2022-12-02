@@ -7,10 +7,23 @@ struct ROMFS_NAME {
     static std::vector<std::filesystem::path> paths;
 };
 
-const romfs::Resource& romfs::ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &path){
-    return ROMFS_NAME::resources[path];
-}
+namespace romfs {
 
-const std::vector<std::filesystem::path>& romfs::list() {
-    return ROMFS_NAME::paths;
+    const romfs::Resource &impl::ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &path) {
+        return ROMFS_NAME::resources[path];
+    }
+
+    std::vector<std::filesystem::path> impl::ROMFS_CONCAT(list_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &parent) {
+        if (parent.empty()) {
+            return ROMFS_NAME::paths;
+        } else {
+            std::vector<std::filesystem::path> result;
+            for (const auto &p : ROMFS_NAME::paths)
+                if (p.parent_path() == parent)
+                    result.push_back(p);
+
+            return result;
+        }
+    }
+
 }

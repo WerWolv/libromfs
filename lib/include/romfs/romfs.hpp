@@ -48,12 +48,15 @@ namespace romfs {
         const std::span<const std::byte> m_content;
     };
 
-    [[nodiscard]]
-    const Resource& ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &path);
+    namespace impl {
 
-    inline const Resource& get(const std::filesystem::path &path) { return ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(path); }
+        [[nodiscard]] const Resource& ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &path);
+        [[nodiscard]] std::vector<std::filesystem::path> ROMFS_CONCAT(list_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &path);
 
-    [[nodiscard]]
-    const std::vector<std::filesystem::path>& list();
+    }
+
+    inline const Resource& get(const std::filesystem::path &path) { return impl::ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(path); }
+    inline std::vector<std::filesystem::path> list(const std::filesystem::path &path = {}) { return impl::ROMFS_CONCAT(list_, LIBROMFS_PROJECT_NAME)(path); }
+
 
 }
