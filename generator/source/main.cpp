@@ -16,7 +16,7 @@ namespace {
 
     std::string toPathString(std::string string) {
         // Replace all backslashes with forward slashes on Windows
-        #if defined (OS_WINDOWS)
+        #if defined (_WIN32)
             string = replace(string, "\\", "/");
         #endif
 
