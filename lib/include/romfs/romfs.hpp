@@ -52,11 +52,13 @@ namespace romfs {
 
         [[nodiscard]] const Resource& ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &path);
         [[nodiscard]] std::vector<std::filesystem::path> ROMFS_CONCAT(list_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &path);
+        [[nodiscard]] const std::string& ROMFS_CONCAT(name_, LIBROMFS_PROJECT_NAME)();
 
     }
 
-    inline const Resource& get(const std::filesystem::path &path) { return impl::ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(path); }
-    inline std::vector<std::filesystem::path> list(const std::filesystem::path &path = {}) { return impl::ROMFS_CONCAT(list_, LIBROMFS_PROJECT_NAME)(path); }
+    [[nodiscard]] inline const Resource& get(const std::filesystem::path &path) { return impl::ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(path); }
+    [[nodiscard]] inline std::vector<std::filesystem::path> list(const std::filesystem::path &path = {}) { return impl::ROMFS_CONCAT(list_, LIBROMFS_PROJECT_NAME)(path); }
+    [[nodiscard]] inline const std::string& name() { return impl::ROMFS_CONCAT(name_, LIBROMFS_PROJECT_NAME)(); }
 
 
 }

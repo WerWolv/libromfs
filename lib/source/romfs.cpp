@@ -5,6 +5,7 @@
 struct ROMFS_NAME {
     static std::map<std::filesystem::path, romfs::Resource> resources;
     static std::vector<std::filesystem::path> paths;
+    static std::string name;
 };
 
 namespace romfs {
@@ -24,6 +25,10 @@ namespace romfs {
 
             return result;
         }
+    }
+
+    const std::string &impl::ROMFS_CONCAT(name_, LIBROMFS_PROJECT_NAME)() {
+        return ROMFS_NAME::name;
     }
 
 }

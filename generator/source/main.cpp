@@ -78,6 +78,7 @@ int main() {
     outputFile << "struct RomFs_" LIBROMFS_PROJECT_NAME " {\n";
     outputFile << "    static std::map<std::filesystem::path, romfs::Resource> resources;\n";
     outputFile << "    static std::vector<std::filesystem::path> paths;\n";
+    outputFile << "    static std::string name;\n";
     outputFile << "};\n\n";
 
     {
@@ -104,6 +105,12 @@ int main() {
         outputFile << "};";
     }
 
+    outputFile << "\n\n";
+
+    {
+        outputFile << "/* RomFS name */\n";
+        outputFile << "std::string RomFs_" LIBROMFS_PROJECT_NAME "::name = \"" LIBROMFS_PROJECT_NAME "\";\n";
+    }
 
     outputFile << "\n\n";
 }
