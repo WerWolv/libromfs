@@ -18,7 +18,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC LIBROMFS_PROJECT_NAME=${LIBROM
 
 # Make sure libromfs gets rebuilt when any of the resources are changed
 add_custom_command(OUTPUT ${ROMFS}
-        COMMAND $<TARGET_FILE:generator-${LIBROMFS_PROJECT_NAME}>
+        COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:generator-${LIBROMFS_PROJECT_NAME}>
         DEPENDS ../generator ${ROMFS_FILES}
         )
 
