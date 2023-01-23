@@ -35,7 +35,7 @@ int main() {
 
     outputFile << "#include <romfs/romfs.hpp>\n\n";
     outputFile << "#include <array>\n";
-    outputFile << "#include <cstdint>\n\n";
+    outputFile << "#include <cstdint>\n";
     outputFile << "#include <filesystem>\n";
     outputFile << "#include <map>\n";
     outputFile << "#include <string>\n";
