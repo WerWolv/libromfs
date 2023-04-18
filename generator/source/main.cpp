@@ -31,7 +31,7 @@ namespace {
 int main() {
     std::ofstream outputFile("libromfs_resources.cpp");
 
-    std::printf("libromfs: Resource Folder: %s\n", RESOURCE_LOCATION);
+    std::printf("[libromfs] Resource Folder: %s\n", RESOURCE_LOCATION);
 
     outputFile << "#include <romfs/romfs.hpp>\n\n";
     outputFile << "#include <array>\n";
@@ -83,7 +83,7 @@ int main() {
         outputFile << "    static std::map<std::filesystem::path, romfs::Resource> resources = {\n";
 
         for (std::uint64_t i = 0; i < identifierCount; i++) {
-            std::printf("libromfs: Bundling resource: %s\n", paths[i].string().c_str());
+            std::printf("[libromfs] Bundling resource: %s\n", paths[i].string().c_str());
 
             outputFile << "        " << "{ \"" << toPathString(paths[i].string()) << "\", romfs::Resource({ reinterpret_cast<std::byte*>(resource_" LIBROMFS_PROJECT_NAME "_" << i << ".data()), " << "resource_" LIBROMFS_PROJECT_NAME "_" << i << ".size() - 1 }) " << "},\n";
         }
