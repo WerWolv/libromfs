@@ -9,7 +9,11 @@ const std::string& ROMFS_CONCAT(ROMFS_NAME, _get_name)();
 namespace romfs {
 
     const romfs::Resource &impl::ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &path) {
-        return ROMFS_CONCAT(ROMFS_NAME, _get_resources)().at(path);
+        try {
+            return ROMFS_CONCAT(ROMFS_NAME, _get_resources)().at(path);
+        } catch (std::out_of_range &ignored) {
+            throw std::invalid_argument(std::string("Invalid romfs resource path for '" + romfs::name() + "' : ") + path.string());
+        }
     }
 
     std::vector<std::filesystem::path> impl::ROMFS_CONCAT(list_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &parent) {
