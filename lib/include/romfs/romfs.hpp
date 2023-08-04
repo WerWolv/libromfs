@@ -25,6 +25,11 @@ namespace romfs {
         }
 
         [[nodiscard]]
+        constexpr std::span<const std::byte> span() const {
+            return this->m_content;
+        }
+
+        [[nodiscard]]
         constexpr std::size_t size() const {
             return this->m_content.size();
         }
