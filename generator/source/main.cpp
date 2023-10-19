@@ -36,10 +36,6 @@ int main() {
     outputFile << "#include <romfs/romfs.hpp>\n\n";
     outputFile << "#include <array>\n";
     outputFile << "#include <cstdint>\n";
-    outputFile << "#include <filesystem>\n";
-    outputFile << "#include <map>\n";
-    outputFile << "#include <string>\n";
-    outputFile << "#include <vector>\n";
 
     outputFile << "\n\n";
     outputFile << "/* Resource definitions */\n";
@@ -79,13 +75,13 @@ int main() {
 
     {
         outputFile << "/* Resource map */\n";
-        outputFile << "const std::map<std::filesystem::path, romfs::Resource>& RomFs_" LIBROMFS_PROJECT_NAME "_get_resources() {\n";
-        outputFile << "    static std::map<std::filesystem::path, romfs::Resource> resources = {\n";
+        outputFile << "std::span<romfs::impl::ResourceLocation> RomFs_" LIBROMFS_PROJECT_NAME "_get_resources() {\n";
+        outputFile << "    static std::array<romfs::impl::ResourceLocation, " << identifierCount << "> resources = {\n";
 
         for (std::uint64_t i = 0; i < identifierCount; i++) {
             std::printf("[libromfs] Bundling resource: %s\n", paths[i].string().c_str());
 
-            outputFile << "        " << "{ \"" << toPathString(paths[i].string()) << "\", romfs::Resource({ reinterpret_cast<std::byte*>(resource_" LIBROMFS_PROJECT_NAME "_" << i << ".data()), " << "resource_" LIBROMFS_PROJECT_NAME "_" << i << ".size() - 1 }) " << "},\n";
+            outputFile << "        " << "romfs::impl::ResourceLocation { \"" << toPathString(paths[i].string()) << "\", romfs::Resource({ reinterpret_cast<std::byte*>(resource_" LIBROMFS_PROJECT_NAME "_" << i << ".data()), " << "resource_" LIBROMFS_PROJECT_NAME "_" << i << ".size() - 1 }) " << "},\n";
         }
         outputFile << "    };";
 
@@ -97,8 +93,8 @@ int main() {
 
     {
         outputFile << "/* Resource paths */\n";
-        outputFile << "const std::vector<std::filesystem::path>& RomFs_" LIBROMFS_PROJECT_NAME "_get_paths() {\n";
-        outputFile << "    static std::vector<std::filesystem::path> paths = {\n";
+        outputFile << "std::span<std::string_view> RomFs_" LIBROMFS_PROJECT_NAME "_get_paths() {\n";
+        outputFile << "    static std::array<std::string_view, " << identifierCount << "> paths = {\n";
 
         for (std::uint64_t i = 0; i < identifierCount; i++) {
             outputFile << "        \"" << toPathString(paths[i].string()) << "\",\n";
@@ -113,9 +109,8 @@ int main() {
 
     {
         outputFile << "/* RomFS name */\n";
-        outputFile << "const std::string& RomFs_" LIBROMFS_PROJECT_NAME "_get_name() {\n";
-        outputFile << "    static std::string name = \"" LIBROMFS_PROJECT_NAME "\";\n";
-        outputFile << "    return name;\n";
+        outputFile << "const char* RomFs_" LIBROMFS_PROJECT_NAME "_get_name() {\n";
+        outputFile << "    return \"" LIBROMFS_PROJECT_NAME "\";\n";
         outputFile << "}\n\n";
     }
 
