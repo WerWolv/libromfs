@@ -28,6 +28,21 @@ namespace {
         return string;
     }
 
+    std::vector<std::string> splitString(std::string string, const std::string &delimiter){
+        std::vector<std::string> result;
+
+        size_t position = 0;
+        const size_t size = string.size();
+
+        while (position < size) {
+            position = string.find(delimiter);
+            result.push_back(string.substr(0, position));
+            string.erase(0, position + delimiter.size());
+        }
+
+        return result;
+    }
+
 }
 
 int main() {
@@ -45,8 +60,10 @@ int main() {
     std::vector<std::filesystem::path> paths;
     std::uint64_t identifierCount = 0;
 
-    for (const auto &splitLocation : std::views::split(std::string_view(RESOURCE_LOCATION), std::string_view(","))) {
-        auto resourceLocation = std::string_view(splitLocation.begin(), splitLocation.end());
+    auto resourceLocations = splitString(RESOURCE_LOCATION, ",");
+    for (const auto &resourceLocation : resourceLocations) {
+        std::printf("[libromfs] Resource Folder: %s\n", resourceLocation.c_str());
+
         outputFile << "\n/* Resource folder: " << resourceLocation << " */\n";
         for (const auto &entry : fs::recursive_directory_iterator(resourceLocation)) {
             if (!entry.is_regular_file()) continue;
