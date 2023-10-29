@@ -14,7 +14,10 @@ endif()
 add_executable(${PROJECT_NAME}
     source/main.cpp
 )
-target_compile_definitions(${PROJECT_NAME} PRIVATE RESOURCE_LOCATION="${LIBROMFS_RESOURCE_LOCATION}" LIBROMFS_PROJECT_NAME="${LIBROMFS_PROJECT_NAME}")
+
+string(REPLACE ";" "," LIBROMFS_RESOURCE_LOCATION_STRING "${LIBROMFS_RESOURCE_LOCATION}")
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE RESOURCE_LOCATION="${LIBROMFS_RESOURCE_LOCATION_STRING}" LIBROMFS_PROJECT_NAME="${LIBROMFS_PROJECT_NAME}")
 target_include_directories(${PROJECT_NAME} PRIVATE include)
 
 # Export generated romfs resource file to libromfs

@@ -2,6 +2,8 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <ranges>
+#include <string_view>
 
 namespace fs = std::filesystem;
 
@@ -31,7 +33,7 @@ namespace {
 int main() {
     std::ofstream outputFile("libromfs_resources.cpp");
 
-    std::printf("[libromfs] Resource Folder: %s\n", RESOURCE_LOCATION);
+    std::printf("[libromfs] Resource Folders: %s\n", RESOURCE_LOCATION);
 
     outputFile << "#include <romfs/romfs.hpp>\n\n";
     outputFile << "#include <array>\n";
@@ -42,33 +44,38 @@ int main() {
 
     std::vector<std::filesystem::path> paths;
     std::uint64_t identifierCount = 0;
-    for (const auto &entry : fs::recursive_directory_iterator(RESOURCE_LOCATION)) {
-        if (!entry.is_regular_file()) continue;
 
-        auto path = fs::canonical(fs::absolute(entry.path()));
-        auto relativePath = fs::relative(entry.path(), fs::absolute(RESOURCE_LOCATION));
+    for (const auto &splitLocation : std::views::split(std::string_view(RESOURCE_LOCATION), std::string_view(","))) {
+        auto resourceLocation = std::string_view(splitLocation.begin(), splitLocation.end());
+        outputFile << "\n/* Resource folder: " << resourceLocation << " */\n";
+        for (const auto &entry : fs::recursive_directory_iterator(resourceLocation)) {
+            if (!entry.is_regular_file()) continue;
 
-        outputFile << "static std::array<std::uint8_t, " << entry.file_size() + 1 << "> " << "resource_" LIBROMFS_PROJECT_NAME "_" << identifierCount << " = {\n";
-        outputFile << "    ";
+            auto path = fs::canonical(fs::absolute(entry.path()));
+            auto relativePath = fs::relative(entry.path(), fs::absolute(resourceLocation));
 
-        std::vector<std::byte> bytes;
-        bytes.resize(entry.file_size());
+            outputFile << "static std::array<std::uint8_t, " << entry.file_size() + 1 << "> " << "resource_" LIBROMFS_PROJECT_NAME "_" << identifierCount << " = {\n";
+            outputFile << "    ";
 
-        auto file = std::fopen(entry.path().string().c_str(), "rb");
-        bytes.resize(std::fread(bytes.data(), 1, entry.file_size(), file));
-        std::fclose(file);
+            std::vector<std::byte> bytes;
+            bytes.resize(entry.file_size());
 
-        outputFile << std::hex << std::uppercase << std::setfill('0') << std::setw(2);
-        for (std::byte byte : bytes) {
-            outputFile << "0x" << static_cast<std::uint32_t>(byte) << ", ";
+            auto file = std::fopen(entry.path().string().c_str(), "rb");
+            bytes.resize(std::fread(bytes.data(), 1, entry.file_size(), file));
+            std::fclose(file);
+
+            outputFile << std::hex << std::uppercase << std::setfill('0') << std::setw(2);
+            for (std::byte byte : bytes) {
+                outputFile << "0x" << static_cast<std::uint32_t>(byte) << ", ";
+            }
+            outputFile << std::dec << std::nouppercase << std::setfill(' ') << std::setw(0);
+
+            outputFile << "\n 0x00 };\n\n";
+
+            paths.push_back(relativePath);
+
+            identifierCount++;
         }
-        outputFile << std::dec << std::nouppercase << std::setfill(' ') << std::setw(0);
-
-        outputFile << "\n 0x00 };\n\n";
-
-        paths.push_back(relativePath);
-
-        identifierCount++;
     }
 
     outputFile << "\n";
