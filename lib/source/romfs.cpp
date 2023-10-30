@@ -1,7 +1,7 @@
 #include <romfs/romfs.hpp>
 
-const std::span<romfs::impl::ResourceLocation> ROMFS_CONCAT(ROMFS_NAME, _get_resources)();
-const std::span<std::string_view> ROMFS_CONCAT(ROMFS_NAME, _get_paths)();
+std::span<romfs::impl::ResourceLocation> ROMFS_CONCAT(ROMFS_NAME, _get_resources)();
+std::span<std::string_view> ROMFS_CONCAT(ROMFS_NAME, _get_paths)();
 const char* ROMFS_CONCAT(ROMFS_NAME, _get_name)();
 
 namespace romfs {
