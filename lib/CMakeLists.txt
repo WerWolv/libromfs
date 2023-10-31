@@ -3,9 +3,14 @@ project("libromfs-${LIBROMFS_PROJECT_NAME}")
 set(CMAKE_CXX_STANDARD 20)
 
 # Gather romfs files
-file(GLOB_RECURSE ROMFS_FILES
-    "${LIBROMFS_RESOURCE_LOCATION}/*"
-)
+set(ROMFS_FILES "")
+
+foreach (path ${LIBROMFS_RESOURCE_LOCATION})
+    file(GLOB_RECURSE ROMFS_FILES_PART
+        "${path}/*"
+    )
+    list(APPEND ROMFS_FILES ${ROMFS_FILES_PART})
+endforeach ()
 
 # Add sources
 add_library(${PROJECT_NAME} STATIC
