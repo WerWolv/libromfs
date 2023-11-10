@@ -10,7 +10,7 @@ namespace fs = std::filesystem;
 namespace {
 
     std::string replace(std::string string, const std::string &from, const std::string &to) {
-        if(!from.empty())
+        if (!from.empty())
             for(size_t pos = 0; (pos = string.find(from, pos)) != std::string::npos; pos += to.size())
                 string.replace(pos, from.size(), to);
         return string;
