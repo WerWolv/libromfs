@@ -81,13 +81,11 @@ int main() {
             bytes.resize(std::fread(bytes.data(), 1, entry.file_size(), file));
             std::fclose(file);
 
-            outputFile << std::hex << std::uppercase << std::setfill('0') << std::setw(2);
             for (std::byte byte : bytes) {
-                outputFile << "0x" << static_cast<std::uint32_t>(byte) << ", ";
+                outputFile << static_cast<std::uint32_t>(byte) << ",";
             }
-            outputFile << std::dec << std::nouppercase << std::setfill(' ') << std::setw(0);
 
-            outputFile << "\n 0x00 };\n\n";
+            outputFile << "0 };\n\n";
 
             paths.push_back(relativePath);
 
