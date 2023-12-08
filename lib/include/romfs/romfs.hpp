@@ -63,15 +63,15 @@ namespace romfs {
             Resource resource;
         };
 
-        [[nodiscard]] const Resource& ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &path);
-        [[nodiscard]] std::vector<std::filesystem::path> ROMFS_CONCAT(list_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &path);
-        [[nodiscard]] std::string_view ROMFS_CONCAT(name_, LIBROMFS_PROJECT_NAME)();
+        [[nodiscard, gnu::visibility("hidden")]] const Resource& ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &path);
+        [[nodiscard, gnu::visibility("hidden")]] std::vector<std::filesystem::path> ROMFS_CONCAT(list_, LIBROMFS_PROJECT_NAME)(const std::filesystem::path &path);
+        [[nodiscard, gnu::visibility("hidden")]] std::string_view ROMFS_CONCAT(name_, LIBROMFS_PROJECT_NAME)();
 
     }
 
-    [[nodiscard]] inline const Resource& get(const std::filesystem::path &path) { return impl::ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(path); }
-    [[nodiscard]] inline std::vector<std::filesystem::path> list(const std::filesystem::path &path = {}) { return impl::ROMFS_CONCAT(list_, LIBROMFS_PROJECT_NAME)(path); }
-    [[nodiscard]] inline std::string_view name() { return impl::ROMFS_CONCAT(name_, LIBROMFS_PROJECT_NAME)(); }
+    [[nodiscard, gnu::visibility("hidden")]] inline const Resource& get(const std::filesystem::path &path) { return impl::ROMFS_CONCAT(get_, LIBROMFS_PROJECT_NAME)(path); }
+    [[nodiscard, gnu::visibility("hidden")]] inline std::vector<std::filesystem::path> list(const std::filesystem::path &path = {}) { return impl::ROMFS_CONCAT(list_, LIBROMFS_PROJECT_NAME)(path); }
+    [[nodiscard, gnu::visibility("hidden")]] inline std::string_view name() { return impl::ROMFS_CONCAT(name_, LIBROMFS_PROJECT_NAME)(); }
 
 
 }
