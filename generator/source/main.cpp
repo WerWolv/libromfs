@@ -97,7 +97,7 @@ int main() {
 
     {
         outputFile << "/* Resource map */\n";
-        outputFile << "[[gnu::visibility(\"hidden\")]] std::span<romfs::impl::ResourceLocation> RomFs_" LIBROMFS_PROJECT_NAME "_get_resources() {\n";
+        outputFile << "ROMFS_VISIBILITY std::span<romfs::impl::ResourceLocation> RomFs_" LIBROMFS_PROJECT_NAME "_get_resources() {\n";
         outputFile << "    static std::array<romfs::impl::ResourceLocation, " << identifierCount << "> resources = {\n";
 
         for (std::uint64_t i = 0; i < identifierCount; i++) {
@@ -115,7 +115,7 @@ int main() {
 
     {
         outputFile << "/* Resource paths */\n";
-        outputFile << "[[gnu::visibility(\"hidden\")]] std::span<std::string_view> RomFs_" LIBROMFS_PROJECT_NAME "_get_paths() {\n";
+        outputFile << "ROMFS_VISIBILITY std::span<std::string_view> RomFs_" LIBROMFS_PROJECT_NAME "_get_paths() {\n";
         outputFile << "    static std::array<std::string_view, " << identifierCount << "> paths = {\n";
 
         for (std::uint64_t i = 0; i < identifierCount; i++) {
@@ -131,7 +131,7 @@ int main() {
 
     {
         outputFile << "/* RomFS name */\n";
-        outputFile << "[[gnu::visibility(\"hidden\")]] const char* RomFs_" LIBROMFS_PROJECT_NAME "_get_name() {\n";
+        outputFile << "ROMFS_VISIBILITY const char* RomFs_" LIBROMFS_PROJECT_NAME "_get_name() {\n";
         outputFile << "    return \"" LIBROMFS_PROJECT_NAME "\";\n";
         outputFile << "}\n\n";
     }
