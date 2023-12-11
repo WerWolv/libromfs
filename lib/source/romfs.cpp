@@ -19,7 +19,7 @@ namespace romfs {
         std::vector<std::filesystem::path> result;
         for (const auto &pathString : ROMFS_CONCAT(ROMFS_NAME, _get_paths)()) {
             auto path = std::filesystem::path(pathString);
-            if (path.parent_path() == parent)
+            if (std::ranges::mismatch(parent, path).in1 == parent.end())
                 result.emplace_back(std::move(path));
         }
 
