@@ -13,7 +13,7 @@
 #define ROMFS_NAME ROMFS_CONCAT(RomFs_, LIBROMFS_PROJECT_NAME)
 
 #if !defined(WIN32)
-    #define ROMFS_VISIBILITY [[gnu::visibility("default")]]
+    #define ROMFS_VISIBILITY [[gnu::visibility("hidden")]]
 #else
     #define ROMFS_VISIBILITY
 #endif
