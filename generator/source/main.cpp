@@ -62,7 +62,16 @@ int main() {
 
     auto resourceLocations = splitString(RESOURCE_LOCATION, ",");
     for (const auto &resourceLocation : resourceLocations) {
-        std::printf("[libromfs] Resource Folder: %s\n", resourceLocation.c_str());
+        std::printf("[libromfs] Packing resource folder: %s\n", resourceLocation.c_str());
+
+        std::error_code errorCode;
+        if (!std::filesystem::exists(resourceLocation, errorCode)) {
+            if (errorCode) {
+                std::printf("[libromfs] Error: %s\n", errorCode.message().c_str());
+            }
+
+            continue;
+        }
 
         outputFile << "\n/* Resource folder: " << resourceLocation << " */\n";
         for (const auto &entry : fs::recursive_directory_iterator(resourceLocation)) {
