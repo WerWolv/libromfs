@@ -48,7 +48,7 @@ namespace {
 int main() {
     std::ofstream outputFile("libromfs_resources.cpp");
 
-    std::printf("\r[libromfs] Resource Folders: %s\n", RESOURCE_LOCATION);
+    std::printf("[libromfs] Resource Folders: %s\n", RESOURCE_LOCATION);
 
     outputFile << "#include <romfs/romfs.hpp>\n\n";
     outputFile << "#include <array>\n";
@@ -62,7 +62,7 @@ int main() {
 
     auto resourceLocations = splitString(RESOURCE_LOCATION, ",");
     for (const auto &resourceLocation : resourceLocations) {
-        std::printf("\r[libromfs] Packing resource folder: %s\n", resourceLocation.c_str());
+        std::printf("[libromfs] Packing resource folder: %s\n", resourceLocation.c_str());
 
         std::error_code errorCode;
         if (!std::filesystem::exists(resourceLocation, errorCode)) {
@@ -110,7 +110,7 @@ int main() {
         outputFile << "    static std::array<romfs::impl::ResourceLocation, " << identifierCount << "> resources = {\n";
 
         for (std::uint64_t i = 0; i < identifierCount; i++) {
-            std::printf("\r[libromfs] Bundling resource: %s\n", paths[i].string().c_str());
+            std::printf("[libromfs] Bundling resource: %s\n", paths[i].string().c_str());
 
             outputFile << "        " << "romfs::impl::ResourceLocation { \"" << toPathString(paths[i].string()) << "\", romfs::Resource({ reinterpret_cast<std::byte*>(resource_" LIBROMFS_PROJECT_NAME "_" << i << ".data()), " << "resource_" LIBROMFS_PROJECT_NAME "_" << i << ".size() - 1 }) " << "},\n";
         }
