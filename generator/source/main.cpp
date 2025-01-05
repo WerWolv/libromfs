@@ -5,6 +5,10 @@
 #include <ranges>
 #include <string_view>
 
+#if defined(LIBROMFS_COMPRESS_RESOURCES)
+    #include <zlib.h>
+#endif
+
 namespace fs = std::filesystem;
 
 namespace {
@@ -80,17 +84,52 @@ int main() {
             auto path = fs::canonical(fs::absolute(entry.path()));
             auto relativePath = fs::relative(entry.path(), fs::absolute(resourceLocation));
 
-            outputFile << "static std::array<std::uint8_t, " << entry.file_size() + 1 << "> " << "resource_" LIBROMFS_PROJECT_NAME "_" << identifierCount << " = {\n";
-            outputFile << "    ";
-
-            std::vector<std::byte> bytes;
-            bytes.resize(entry.file_size());
+            std::vector<std::uint8_t> inputData;
+            inputData.resize(entry.file_size());
 
             auto file = std::fopen(entry.path().string().c_str(), "rb");
-            bytes.resize(std::fread(bytes.data(), 1, entry.file_size(), file));
+            inputData.resize(std::fread(inputData.data(), 1, entry.file_size(), file));
             std::fclose(file);
 
-            for (std::byte byte : bytes) {
+            std::vector<std::uint8_t> bytes;
+            #if defined(LIBROMFS_COMPRESS_RESOURCES)
+                z_stream stream;
+                stream.zalloc = Z_NULL;
+                stream.zfree = Z_NULL;
+                stream.opaque = Z_NULL;
+                stream.avail_in = inputData.size();
+                stream.next_in = inputData.data();
+
+                // Initialize the zlib deflate operation
+                if (deflateInit(&stream, Z_BEST_COMPRESSION) != Z_OK) {
+                    continue;
+                }
+
+                // Estimate the compressed size and allocate the buffer
+                bytes.resize(inputData.size() * 1.1 + 12); // Slightly larger than the input size
+
+                stream.avail_out = bytes.size();
+                stream.next_out  = bytes.data();
+
+                // Perform the compression
+                if (deflate(&stream, Z_FINISH) != Z_STREAM_END) {
+                    deflateEnd(&stream);
+                    continue;
+                }
+
+                // Resize the output buffer to the actual size
+                bytes.resize(stream.total_out);
+
+                // Clean up
+                deflateEnd(&stream);
+            #else
+                bytes = std::move(inputData);
+            #endif
+
+            outputFile << "static std::array<std::uint8_t, " << bytes.size() + 1 << "> " << "resource_" LIBROMFS_PROJECT_NAME "_" << identifierCount << " = {\n";
+            outputFile << "    ";
+
+            for (auto byte : bytes) {
                 outputFile << static_cast<std::uint32_t>(byte) << ",";
             }
 

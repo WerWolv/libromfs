@@ -22,6 +22,12 @@ string(REPLACE ";" "," LIBROMFS_RESOURCE_LOCATION_STRING "${LIBROMFS_RESOURCE_LO
 target_compile_definitions(${PROJECT_NAME} PRIVATE RESOURCE_LOCATION="${LIBROMFS_RESOURCE_LOCATION_STRING}" LIBROMFS_PROJECT_NAME="${LIBROMFS_PROJECT_NAME}")
 target_include_directories(${PROJECT_NAME} PRIVATE include)
 
+if (LIBROMFS_COMPRESS_RESOURCES)
+    find_package(ZLIB REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${ZLIB_LIBRARIES})
+    target_compile_definitions(${PROJECT_NAME} PRIVATE LIBROMFS_COMPRESS_RESOURCES=1)
+endif()
+
 # Export generated romfs resource file to libromfs
 set(ROMFS "libromfs_resources.cpp" PARENT_SCOPE)
 set(ROMFS "libromfs_resources.cpp")

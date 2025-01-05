@@ -23,24 +23,30 @@ concept ByteType = std::is_trivial_v<T> && sizeof(T) == sizeof(std::byte);
 
 namespace romfs {
 
+    namespace impl {
+        ROMFS_VISIBILITY void ROMFS_CONCAT(decompress_if_needed_, LIBROMFS_PROJECT_NAME)(std::vector<std::byte> &decompressedData, std::span<const std::byte> compressedData);
+    }
+
     class Resource {
     public:
         constexpr Resource() = default;
-        explicit constexpr Resource(const std::span<std::byte> &content) : m_content(content) {}
+        explicit constexpr Resource(const std::span<std::byte> &content) : m_compressedData(content) {}
 
         template<ByteType T = std::byte>
-        [[nodiscard]] constexpr const T* data() const {
-            return reinterpret_cast<const T*>(this->m_content.data());
+        [[nodiscard]] const T* data() const {
+            impl::ROMFS_CONCAT(decompress_if_needed_, LIBROMFS_PROJECT_NAME)(m_decompressedData, m_compressedData);
+            return reinterpret_cast<const T*>(this->m_decompressedData.data());
         }
 
         template<ByteType T = std::byte>
-        [[nodiscard]] constexpr std::span<const T> span() const {
+        [[nodiscard]] std::span<const T> span() const {
             return { this->data<T>(), this->size() };
         }
 
         [[nodiscard]]
-        constexpr std::size_t size() const {
-            return this->m_content.size();
+        std::size_t size() const {
+            impl::ROMFS_CONCAT(decompress_if_needed_, LIBROMFS_PROJECT_NAME)(m_decompressedData, m_compressedData);
+            return this->m_decompressedData.size();
         }
 
         [[nodiscard]]
@@ -54,12 +60,14 @@ namespace romfs {
         }
 
         [[nodiscard]]
-        constexpr bool valid() const {
-            return !this->m_content.empty() && this->m_content.data() != nullptr;
+        bool valid() const {
+            impl::ROMFS_CONCAT(decompress_if_needed_, LIBROMFS_PROJECT_NAME)(m_decompressedData, m_compressedData);
+            return !this->m_decompressedData.empty() && this->m_decompressedData.data() != nullptr;
         }
 
     private:
-        std::span<const std::byte> m_content;
+        mutable std::vector<std::byte> m_decompressedData;
+        std::span<const std::byte> m_compressedData;
     };
 
     namespace impl {
