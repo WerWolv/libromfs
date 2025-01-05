@@ -24,7 +24,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE include)
 
 if (LIBROMFS_COMPRESS_RESOURCES)
     find_package(ZLIB REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${ZLIB_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} PRIVATE ZLIB::ZLIB)
     target_compile_definitions(${PROJECT_NAME} PRIVATE LIBROMFS_COMPRESS_RESOURCES=1)
 endif()
 
