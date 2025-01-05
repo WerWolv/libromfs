@@ -46,7 +46,11 @@ namespace romfs {
         [[nodiscard]]
         std::size_t size() const {
             impl::ROMFS_CONCAT(decompress_if_needed_, LIBROMFS_PROJECT_NAME)(m_decompressedData, m_compressedData);
-            return this->m_decompressedData.size();
+
+            if (this->m_decompressedData.empty())
+                return 0;
+            else
+                return this->m_decompressedData.size() - 1;
         }
 
         [[nodiscard]]

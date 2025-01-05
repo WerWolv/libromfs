@@ -91,6 +91,8 @@ int main() {
             inputData.resize(std::fread(inputData.data(), 1, entry.file_size(), file));
             std::fclose(file);
 
+            inputData.push_back(0x00);
+
             std::vector<std::uint8_t> bytes;
             #if defined(LIBROMFS_COMPRESS_RESOURCES)
                 z_stream stream;
@@ -133,7 +135,7 @@ int main() {
                 outputFile << static_cast<std::uint32_t>(byte) << ",";
             }
 
-            outputFile << "0 };\n\n";
+            outputFile << " };\n\n";
 
             paths.push_back(relativePath);
 
