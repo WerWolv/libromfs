@@ -24,16 +24,24 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC LIBROMFS_PROJECT_NAME=${LIBROM
 if (LIBROMFS_COMPRESS_RESOURCES)
     find_package(ZLIB REQUIRED)
 
-    if (TARGET ${ZLIB_LIBRARIES})
+    list(LENGTH ZLIB_LIBRARIES ZLIB_LIBRARIES_COUNT)
+
+    if (${ZLIB_LIBRARIES_COUNT} EQUAL 1)
+        if (TARGET ${ZLIB_LIBRARIES})
+            target_link_libraries(${PROJECT_NAME} PRIVATE ${ZLIB_LIBRARIES})
+            target_compile_definitions(${PROJECT_NAME} PRIVATE LIBROMFS_COMPRESS_RESOURCES=1)
+        endif()
+    elseif(${ZLIB_LIBRARIES_COUNT} GREATER 1)
         target_link_libraries(${PROJECT_NAME} PRIVATE ${ZLIB_LIBRARIES})
-        target_compile_definitions(${PROJECT_NAME} PRIVATE LIBROMFS_COMPRESS_RESOURCES=1)
+        target_include_directories(${PROJECT_NAME} PRIVATE ${ZLIB_INCLUDE_DIRS})
+        target_compile_definitions(${PROJECT_NAME} PRIVATE LIBROMFS_COMPRESS_RESOURCES=1)     
     endif()
 endif()
 
 # Make sure libromfs gets rebuilt when any of the resources are changed
 add_custom_command(OUTPUT ${ROMFS}
         COMMAND $<TARGET_FILE:generator-${LIBROMFS_PROJECT_NAME}>
-        DEPENDS ../generator ${ROMFS_FILES}
+        DEPENDS generator-${LIBROMFS_PROJECT_NAME} ${ROMFS_FILES}
         )
 
 add_custom_target(romfs_file_packer-${LIBROMFS_PROJECT_NAME} ALL DEPENDS ${ROMFS_FILES})
