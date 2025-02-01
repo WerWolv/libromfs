@@ -39,6 +39,10 @@ if (LIBROMFS_COMPRESS_RESOURCES)
     endif()
 endif()
 
+if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    target_compile_options(${PROJECT_NAME} PRIVATE "/EHsc")
+endif()
+
 # Export generated romfs resource file to libromfs
 set(ROMFS "libromfs_resources.cpp" PARENT_SCOPE)
 set(ROMFS "libromfs_resources.cpp")
