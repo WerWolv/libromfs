@@ -1,7 +1,5 @@
 project("libromfs-${LIBROMFS_PROJECT_NAME}")
 
-set(CMAKE_CXX_STANDARD 20)
-
 # Gather romfs files
 set(ROMFS_FILES "")
 
@@ -20,6 +18,12 @@ add_library(${PROJECT_NAME} STATIC
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 target_compile_definitions(${PROJECT_NAME} PUBLIC LIBROMFS_PROJECT_NAME=${LIBROMFS_PROJECT_NAME})
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
+
+if (LIBROMFS_USE_EMBED AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    # Silence #embed warning on Clang
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-c23-extensions)
+endif()
 
 if (LIBROMFS_COMPRESS_RESOURCES)
     find_package(ZLIB QUIET)

@@ -84,58 +84,75 @@ int main() {
             auto path = fs::canonical(fs::absolute(entry.path()));
             auto relativePath = fs::relative(entry.path(), fs::absolute(resourceLocation));
 
-            std::vector<std::uint8_t> inputData;
-            inputData.resize(entry.file_size());
+            // Skip file processing only if we don't have to compress resources and we're using #embed
+            #if defined(LIBROMFS_COMPRESS_RESOURCES) || (!defined(LIBROMFS_USE_EMBED) || !defined(__has_embed))
+                std::vector<std::uint8_t> inputData;
+                inputData.resize(entry.file_size());
 
-            auto file = std::fopen(entry.path().string().c_str(), "rb");
-            inputData.resize(std::fread(inputData.data(), 1, entry.file_size(), file));
-            std::fclose(file);
+                auto file = std::fopen(entry.path().string().c_str(), "rb");
+                inputData.resize(std::fread(inputData.data(), 1, entry.file_size(), file));
+                std::fclose(file);
 
-            inputData.push_back(0x00);
+                inputData.push_back(0x00);
 
-            std::vector<std::uint8_t> bytes;
-            #if defined(LIBROMFS_COMPRESS_RESOURCES)
-                z_stream stream;
-                stream.zalloc = Z_NULL;
-                stream.zfree = Z_NULL;
-                stream.opaque = Z_NULL;
-                stream.avail_in = inputData.size();
-                stream.next_in = inputData.data();
+                std::vector<std::uint8_t> bytes;
+                #if defined(LIBROMFS_COMPRESS_RESOURCES)
+                    z_stream stream;
+                    stream.zalloc = Z_NULL;
+                    stream.zfree = Z_NULL;
+                    stream.opaque = Z_NULL;
+                    stream.avail_in = inputData.size();
+                    stream.next_in = inputData.data();
 
-                // Initialize the zlib deflate operation
-                if (deflateInit(&stream, Z_BEST_COMPRESSION) != Z_OK) {
-                    continue;
-                }
+                    // Initialize the zlib deflate operation
+                    if (deflateInit(&stream, Z_BEST_COMPRESSION) != Z_OK) {
+                        continue;
+                    }
 
-                // Estimate the compressed size and allocate the buffer
-                bytes.resize(inputData.size() * 1.1 + 12); // Slightly larger than the input size
+                    // Estimate the compressed size and allocate the buffer
+                    bytes.resize(inputData.size() * 1.1 + 12); // Slightly larger than the input size
 
-                stream.avail_out = bytes.size();
-                stream.next_out  = bytes.data();
+                    stream.avail_out = bytes.size();
+                    stream.next_out  = bytes.data();
 
-                // Perform the compression
-                if (deflate(&stream, Z_FINISH) != Z_STREAM_END) {
+                    // Perform the compression
+                    if (deflate(&stream, Z_FINISH) != Z_STREAM_END) {
+                        deflateEnd(&stream);
+                        continue;
+                    }
+
+                    // Resize the output buffer to the actual size
+                    bytes.resize(stream.total_out);
+
+                    // Clean up
                     deflateEnd(&stream);
-                    continue;
-                }
-
-                // Resize the output buffer to the actual size
-                bytes.resize(stream.total_out);
-
-                // Clean up
-                deflateEnd(&stream);
+                #else
+                    bytes = std::move(inputData);
+                #endif
+                size_t outputArraySize = bytes.size() + 1;
             #else
-                bytes = std::move(inputData);
+                size_t outputArraySize = entry.file_size();
             #endif
 
-            outputFile << "static std::array<std::uint8_t, " << bytes.size() + 1 << "> " << "resource_" LIBROMFS_PROJECT_NAME "_" << identifierCount << " = {\n";
+            outputFile << "static std::array<std::uint8_t, " << outputArraySize << "> " << "resource_" LIBROMFS_PROJECT_NAME "_" << identifierCount << " = {\n";
             outputFile << "    ";
 
-            for (auto byte : bytes) {
-                outputFile << static_cast<std::uint32_t>(byte) << ",";
-            }
+            #if defined(LIBROMFS_USE_EMBED) && defined(__has_embed)
+                #ifdef LIBROMFS_COMPRESS_RESOURCES
+                {
+                    path = fs::path(COMPRESSED_OUTPUT_DIR) / std::to_string(identifierCount);
+                    std::ofstream compressedFile(path);
+                    compressedFile.write(std::bit_cast<const char*>(bytes.data()), bytes.size());
+                }
+                #endif
+                outputFile << "#embed " << path;
+            #else
+                for (auto byte : bytes) {
+                    outputFile << static_cast<std::uint32_t>(byte) << ",";
+                }
+            #endif
 
-            outputFile << " };\n\n";
+            outputFile << "\n};\n\n";
 
             paths.push_back(relativePath);
 

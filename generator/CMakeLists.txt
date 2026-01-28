@@ -1,5 +1,4 @@
 project(generator-${LIBROMFS_PROJECT_NAME})
-set(CMAKE_CXX_STANDARD 20)
 
 # This is a code generator, so when cross compiling it should be built with the host (native) toolchain
 if (CMAKE_CROSSCOMPILING)
@@ -21,6 +20,7 @@ string(REPLACE ";" "," LIBROMFS_RESOURCE_LOCATION_STRING "${LIBROMFS_RESOURCE_LO
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE RESOURCE_LOCATION="${LIBROMFS_RESOURCE_LOCATION_STRING}" LIBROMFS_PROJECT_NAME="${LIBROMFS_PROJECT_NAME}")
 target_include_directories(${PROJECT_NAME} PRIVATE include)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
 if (LIBROMFS_COMPRESS_RESOURCES)
     find_package(ZLIB QUIET)
@@ -40,6 +40,15 @@ if (LIBROMFS_COMPRESS_RESOURCES)
     else()
         message(WARNING "Requested RomFS to be compressed but zlib is unavailable! Resulting RomFS will NOT be compressed.")
     endif()
+endif()
+
+if (LIBROMFS_USE_EMBED)
+    set(LIBROMFS_COMPRESSED_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/compressed/${LIBROMFS_PROJECT_NAME}")
+    file(MAKE_DIRECTORY ${LIBROMFS_COMPRESSED_OUTPUT_DIR})
+    target_compile_definitions(${PROJECT_NAME} PRIVATE
+        LIBROMFS_USE_EMBED
+        COMPRESSED_OUTPUT_DIR="${LIBROMFS_COMPRESSED_OUTPUT_DIR}"
+    )
 endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
