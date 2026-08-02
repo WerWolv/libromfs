@@ -43,7 +43,7 @@ endif()
 
 # Make sure libromfs gets rebuilt when any of the resources are changed
 add_custom_command(OUTPUT ${ROMFS}
-        COMMAND $<TARGET_FILE:generator-${LIBROMFS_PROJECT_NAME}>
+        COMMAND generator-${LIBROMFS_PROJECT_NAME}
         DEPENDS generator-${LIBROMFS_PROJECT_NAME} ${ROMFS_FILES}
         )
 
