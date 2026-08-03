@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 option(LIBROMFS_PROJECT_NAME "Project name" "")
 option(LIBROMFS_RESOURCE_LOCATION "Resource location" "")
 option(LIBROMFS_COMPRESS_RESOURCES "If resources should be zlib compressed" ON)
+set(LIBROMFS_GENERATOR_EMULATOR "" CACHE STRING "Command used to run cross-compiled resource generators")
 
 if (NOT LIBROMFS_PROJECT_NAME)
     message(FATAL_ERROR "LIBROMFS_PROJECT_NAME is not set")
@@ -24,4 +25,3 @@ set(LIBROMFS_LIBRARY libromfs-${LIBROMFS_PROJECT_NAME} PARENT_SCOPE)
 # Add libromfs components
 add_subdirectory(generator)
 add_subdirectory(lib)
-
