@@ -1,3 +1,4 @@
+#define ROMFS_KEEP_MACROS
 #include <romfs/romfs.hpp>
 
 #include <ranges>

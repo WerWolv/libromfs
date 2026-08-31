@@ -54,6 +54,7 @@ int main() {
 
     std::printf("[libromfs] Resource Folders: %s\n", RESOURCE_LOCATION);
 
+    outputFile << "#define ROMFS_KEEP_MACROS\n";
     outputFile << "#include <romfs/romfs.hpp>\n\n";
     outputFile << "#include <array>\n";
     outputFile << "#include <cstdint>\n";

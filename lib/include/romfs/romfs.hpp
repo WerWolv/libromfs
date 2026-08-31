@@ -96,3 +96,10 @@ namespace romfs {
 
 
 }
+
+#ifndef ROMFS_KEEP_MACROS
+    #undef ROMFS_CONCAT_IMPL
+    #undef ROMFS_CONCAT
+    #undef ROMFS_NAME
+    #undef ROMFS_VISIBILITY
+#endif
