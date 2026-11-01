@@ -6,6 +6,7 @@
 #include <string_view>
 #include <span>
 #include <vector>
+#include <type_traits>
 
 #define ROMFS_CONCAT_IMPL(x, y) x##y
 #define ROMFS_CONCAT(x, y) ROMFS_CONCAT_IMPL(x, y)
